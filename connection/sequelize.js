@@ -28,6 +28,5 @@ async function checkConnection(){
 }
 
 checkConnection()
-console.log(sequelize)
 
 module.exports = sequelize
