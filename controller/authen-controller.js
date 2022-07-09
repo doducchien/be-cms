@@ -68,8 +68,43 @@ async function updateInfoAdmin(req, res) {
     }
 }
 
+async function updatePassAdmin(req, res) {
+    let response;
+    const { username, currentPassword, newPassword } = req.body;
+    const user = await AdminAccount.findOne({
+        where:{username}
+    })
+    if(user.password != currentPassword){
+        response = new BaseResponse({}, "Current password is incorrect");
+
+        res.status(400).json(response)
+    }
+    else if(user.password == newPassword){
+        response = new BaseResponse({}, "New password must be difference from current password");
+
+        res.status(400).json(response)
+    }
+    else{
+        const result = await AdminAccount.update(
+            {password: newPassword}, {where: {username}}
+        )
+
+        if(result){
+            response = new BaseResponse({}, "Update password  success");
+            res.status(204).json(response);
+        }
+        else{
+            response = new BaseResponse({}, "Update password failure");
+            res.status(500).json(response);
+        }
+    }
+
+
+}
+
 module.exports = {
     login,
     getDetailAdmin,
-    updateInfoAdmin
+    updateInfoAdmin,
+    updatePassAdmin
 }
